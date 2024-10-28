@@ -15,10 +15,22 @@ void add(int ind, int end) { ... } // add a[ind] (end = 0 or 1)
 void del(int ind, int end) { ... } // remove a[ind]
 int calc() { ... } // compute current answer
 
+ull hilbert(ull x, ull y) {
+	const ull logn = __lg(max(x, y) * 2 + 1) | 1;
+	const ull maxn = (1ull << logn) - 1;
+	ull res = 0;
+	for (ull s = 1ull << (logn - 1); s; s >>= 1) {
+		bool rx = x & s, ry = y & s;
+		res = (res << 2) | (rx ? ry ? 2 : 1 : ry ? 3 : 0);
+		if (!rx) { if (ry) x ^= maxn, y ^= maxn; swap(x, y); }
+	}
+	return res;
+}
+
 vi mo(vector<pii> Q) {
 	int L = 0, R = 0, blk = 350; // ~N/sqrt(Q)
 	vi s(sz(Q)), res = s;
-#define K(x) pii(x.first/blk, x.second ^ -(x.first/blk & 1))
+#define K(x) hilbert(x.first, x.second)
 	iota(all(s), 0);
 	sort(all(s), [&](int s, int t){ return K(Q[s]) < K(Q[t]); });
 	for (int qi : s) {

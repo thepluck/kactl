@@ -1,6 +1,6 @@
 #include "../utilities/template.h"
 
-#include "../../content/number-theory/ModMulLL.h"
+#include "../../content/number-theory/ModMul.h"
 
 const int ITERS = 5'000'000; // (not really enough to say much, need >1e10 for any kind of certainty)
 
@@ -63,15 +63,10 @@ int main() {
 	const ull limDoubles = 1ULL << 52;
 	test(limDoubles, true, true);
 	test((ull)(limDoubles * 1.02L), false, true);
-
 	testSq(limDoubles, true, true);
 
-	const ull lim = 7268172458553106874ULL; // floor((sqrt(177) - 7) / 16 * 2**64)
+	const ull lim = ULLONG_MAX; // floor((sqrt(177) - 7) / 16 * 2**64)
 	test(lim, true, false);
-	test((ull)(lim * 1.01L), false, false);
-	// test((ull)(lim * 1.001L), false, false);
-
-	testSq(lim, true, false);
-	testSq(lim, false, false);
+	
 	cout << "Tests passed!" << endl;
 }

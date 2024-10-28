@@ -48,7 +48,7 @@
  */
 #pragma once
 
-#include "ModMulLL.h"
+#include "ModMul.h"
 #include "MillerRabin.h"
 
 ull pollard(ull n) {

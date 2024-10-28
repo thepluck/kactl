@@ -16,10 +16,32 @@
  */
 #pragma once
 
+typedef unsigned int uint;
 typedef unsigned long long ull;
+uint modmul(uint a, uint b, uint M) {
+#ifdef _WIN32
+	ull x = ull(a) * ull(b);
+	uint xh = uint(x >> 32), xl = uint(x), d, m;
+	asm("divl %4; \n\t" : "=a"(d), "=d"(m)
+		: "d"(xh), "a"(xl), "r"(M()));
+	return m;
+#else
+	uint ret;
+	asm("mul %%ebx\ndiv %%ecx\nmov %%edx, %0\n"
+	: "=ret"(ret): "a"(a), "b"(b), "c"(M): "edx");
+	return ret;
+#endif
+}
 ull modmul(ull a, ull b, ull M) {
+#ifdef _WIN32
 	ll ret = a * b - M * ull(1.L / M * a * b);
 	return ret + M * (ret < 0) - M * (ret >= (ll)M);
+#else
+	ull ret;
+	asm("mul %%rbx\ndiv %%rcx\n" : "=d"(ret)
+		: "a"(a), "b"(b), "c"(M));
+	return ret;
+#endif
 }
 ull modpow(ull b, ull e, ull mod) {
 	ull ans = 1;
