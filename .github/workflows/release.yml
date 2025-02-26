@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install pdflatex
+        run: sudo apt-get install texlive-latex-base texlive-latex-recommended texlive-latex-extra
+      - name: Build pdf
+        run: make kactl
+      - name: Run compiles
+        run: make test-compiles
+      - name: Run stress tests
+        run: make test
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Latest build"
+          files: "kactl.pdf"
